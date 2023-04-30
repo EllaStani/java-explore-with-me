@@ -20,4 +20,10 @@ public class HitInDto {
     private String app;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private String timestamp;
+    public HitInDto(String app, String uri, String ip, String timestamp) {
+        this.app = app;
+        this.uri = uri;
+        this.ip = ip;
+        this.ip = timestamp;
+    }
 }

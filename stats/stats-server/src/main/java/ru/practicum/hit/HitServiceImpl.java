@@ -16,7 +16,7 @@ public class HitServiceImpl implements HitService {
     private final HitJpaRepository hitRepository;
 
     @Override
-    public List<HitDto> getHits(LocalDateTime start, LocalDateTime end, String[] uri, boolean unique) {
+    public List<HitDto> getHits(LocalDateTime start, LocalDateTime end, List<String> uri, boolean unique) {
         List<HitDto> hitDtos;
         if (uri == null) {
             if (unique == true) {
@@ -33,6 +33,11 @@ public class HitServiceImpl implements HitService {
         }
         return hitDtos;
     }
+//
+//    @Override
+//    public Integer getCountHits(String uri) {
+//        return hitRepository.countByUri(uri);
+//    }
 
     @Transactional
     @Override

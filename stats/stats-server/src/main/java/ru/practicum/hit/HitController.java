@@ -22,8 +22,9 @@ public class HitController {
     public List<HitDto> getHits(
             @RequestParam(value = "start") @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime start,
             @RequestParam(value = "end") @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime end,
-            @RequestParam(value = "uris", required = false) String[] uris,
+            @RequestParam(value = "uris", required = false) List<String> uris,
             @RequestParam(value = "unique", defaultValue = "false") boolean unique) {
+        System.out.println("----- 7 --------");
         log.info("Stats: Get stats on views for uri={}, period from {} to {}, unique is {}", uris, start, end, unique);
         return hitService.getHits(start, end, uris, unique);
     }
@@ -31,6 +32,7 @@ public class HitController {
     @PostMapping(path = "/hit")
     @ResponseStatus(value = HttpStatus.CREATED)
     public HitInDto saveNewHit(@RequestBody @Valid HitInDto hitDto) {
+        System.out.println("----- 8 --------");
         HitInDto newHitDto = hitService.saveNewHit(hitDto);
         log.info("Stats: Save new hit {}", newHitDto);
         return newHitDto;

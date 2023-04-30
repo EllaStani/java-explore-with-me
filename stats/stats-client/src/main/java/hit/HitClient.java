@@ -28,13 +28,14 @@ public class HitClient extends BaseClient {
         );
     }
 
-    public List<HitDto> getHits(String start, String end, String[] uris, boolean unique) {
+    public List<HitDto> getHits(String start, String end, List<String> uris, boolean unique) {
         Map<String, Object> parameters = Map.of(
                 "start", start,
                 "end", end,
                 "uris", uris,
                 "unique", unique
         );
+
         ResponseEntity<Object> objectResponseEntity =
                 get("/stats?start={start}&end={end}&uris={uris}&unique={unique}", parameters);
         List<HitDto> hitDtos = new ObjectMapper().convertValue(objectResponseEntity.getBody(), new TypeReference<>() {
@@ -42,7 +43,7 @@ public class HitClient extends BaseClient {
         return hitDtos;
     }
 
-    public ResponseEntity<Object> saveNewHit(HitInDto hitDto) {
-        return post("/hit", hitDto);
+    public ResponseEntity<Object> saveNewHit(HitInDto hitInDto) {
+        return post("/hit", hitInDto);
     }
 }
