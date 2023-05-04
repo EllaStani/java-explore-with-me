@@ -24,7 +24,7 @@ public class AdminUserController {
     @GetMapping
     public List<UserDto> getUsersByIds(
             @RequestParam(value = "ids", required = false) int[] ids,
-            @RequestParam (value = "from", defaultValue = "0") @PositiveOrZero  Integer from,
+            @RequestParam(value = "from", defaultValue = "0") @PositiveOrZero Integer from,
             @RequestParam(value = "size", defaultValue = "10") @Positive Integer size) {
         List<UserDto> userDtos = userService.getUsers(ids, from, size);
         log.info("API AdminUser. Get-запрос: пользователи по списку={}, from = {} size = {}", ids, from, size);

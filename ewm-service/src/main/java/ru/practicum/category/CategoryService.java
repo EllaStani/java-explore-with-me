@@ -1,6 +1,7 @@
 package ru.practicum.category;
 
-import ru.practicum.user.dto.UserDto;
+import ru.practicum.category.dto.CategoryDto;
+import ru.practicum.category.dto.CategoryNewDto;
 
 import java.util.List;
 
@@ -9,9 +10,9 @@ public interface CategoryService {
 
     CategoryDto getCategoryById(int catId);
 
-    CategoryDto saveNewCategory(CategoryDto categoryDto);
+    CategoryDto saveNewCategory(CategoryNewDto categoryNewDto);
 
-    CategoryDto updateCategory(int catId, CategoryDto categoryDto);
+    CategoryDto updateCategory(int catId, CategoryNewDto categoryNewDto);
 
     void deleteCategoryById(int catId);
 }

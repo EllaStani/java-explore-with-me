@@ -2,7 +2,6 @@ package ru.practicum.event.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Sort;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -32,27 +31,30 @@ public class PublicEventController {
             @RequestParam(value = "categories", required = false) int[] categories,
             @RequestParam(value = "paid", required = false) boolean paid,
             @RequestParam(value = "rangeStart", required = false)
-                @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeStart,
+            @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeStart,
             @RequestParam(value = "rangeEnd", required = false)
-                @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeEnd,
+            @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeEnd,
             @RequestParam(value = "onlyAvailable", defaultValue = "false") boolean onlyAvailable,
             @RequestParam(value = "sort", defaultValue = "EVENT_DATE") SortMethod sort,
             @RequestParam(value = "from", defaultValue = "0") @PositiveOrZero Integer from,
-            @RequestParam(value = "size", defaultValue = "10") @Positive Integer size){
-        System.out.println("----- 5 --------");
+            @RequestParam(value = "size", defaultValue = "10") @Positive Integer size) {
+
+        log.info("API PublicEvent. GET: параметры поиска: text={}, categories={}, paid={}, " +
+                        "rangeStart={}, onlyAvailable={}, sort={}", text, categories, paid, rangeStart,
+                rangeEnd, onlyAvailable, sort);
+
         List<EventShortDto> eventShortDtos = eventService.getPublicEventsWithSort(text, categories, paid,
-                rangeStart, rangeEnd, onlyAvailable,
-                sort, from, size, request.getRemoteAddr());
-        log.info("API PublicEvent. GET: Информация о событиях, параметры поиска: ");
+                rangeStart, rangeEnd, onlyAvailable, sort, from, size, request.getRemoteAddr());
+        log.info("API PublicEvent. GET: Информация о событиях: {}", eventShortDtos);
         return eventShortDtos;
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping(value = "/{id}")
-    public EventFullDto getEventById(@PathVariable int eventId) {
-        System.out.println("----- 6 --------");
+    @GetMapping("/{eventId}")
+    public EventFullDto getEventById(@PathVariable Integer eventId) {
+        log.info("API PublicEvent. GET:  eventId={}", eventId);
         EventFullDto eventFullDto = eventService.getPublicEventById(eventId, request.getRemoteAddr());
-        log.info("API PublicEvent. GET:  найдено событие eventId={} : {}", eventFullDto, eventId);
+        log.info("API PublicEvent. GET:  найдено событие: {}", eventFullDto);
         return eventFullDto;
     }
 }

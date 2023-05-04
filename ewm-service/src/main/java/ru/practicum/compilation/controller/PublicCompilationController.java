@@ -14,7 +14,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(path = "/admin/compilations")
+@RequestMapping(path = "/compilations")
 public class PublicCompilationController {
     private final CompilationService compService;
 
@@ -24,16 +24,16 @@ public class PublicCompilationController {
             @RequestParam(defaultValue = "false") Boolean pinned,
             @RequestParam(value = "from", defaultValue = "0") @PositiveOrZero Integer from,
             @RequestParam(value = "size", defaultValue = "10") @Positive Integer size) {
+        log.info("API PublicCompilation. GET: параметры pinned={} from = {}, size = {}", pinned, from, size);
         List<CompilationDto> categoryDtos = compService.getCompilations(pinned, from, size);
-        log.info("API PublicCompilation. Get-запрос: параметры pinned={} from = {}, size = {}", pinned, from, size);
-        log.info("API PublicCategory. Get-запрос: найдено {} подборок : {}", categoryDtos.size(), categoryDtos);
+        log.info("API PublicCategory. GET: найдено {} подборок : {}", categoryDtos.size(), categoryDtos);
         return categoryDtos;
     }
 
     @GetMapping("/{compId}")
     public CompilationDto getCompilations(@PathVariable int compId) {
         CompilationDto compilationDto = compService.getCompilationById(compId);
-        log.info("API PublicCategory. Get-запрос: найдена подборка {}, compId={}", compilationDto, compId);
+        log.info("API PublicCategory. GET: найдена подборка {}, compId={}", compilationDto, compId);
         return compilationDto;
     }
 }

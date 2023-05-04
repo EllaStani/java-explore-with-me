@@ -12,7 +12,9 @@ public class UserMapper {
         return new UserDto(user.getId(), user.getName(), user.getEmail());
     }
 
-    public static UserShortDto mapToUserShortDto(User user) { return new UserShortDto(user.getId(), user.getName()); }
+    public static UserShortDto mapToUserShortDto(User user) {
+        return new UserShortDto(user.getId(), user.getName());
+    }
 
     public static List<UserDto> mapToListUserDto(Page<User> users) {
         List<UserDto> userDtos = users.stream()

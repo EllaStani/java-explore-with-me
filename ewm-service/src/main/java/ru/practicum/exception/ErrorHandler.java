@@ -1,19 +1,16 @@
 package ru.practicum.exception;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RestControllerAdvice
@@ -23,22 +20,11 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Map<String, String> handleValidationException(final ValidationException e) {
         log.error("400 {}", e.getMessage());
-        return Map.of("error", e.getMessage(),
-                "errorMessage", e.getMessage()
+        return Map.of("status", "400 - BAD_REQUEST",
+                "reason", "Incorrectly made request.",
+                "errorMessage", e.getMessage(),
+                "timestamp", LocalDateTime.now().toString()
         );
-    }
-
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ResponseBody
-    public ErrorResponse onMethodArgumentNotValidException(MethodArgumentNotValidException e) {
-        List<String> errors = e.getBindingResult()
-                .getFieldErrors()
-                .stream()
-                .map(x -> x.getDefaultMessage())
-                .collect(Collectors.toList());
-        log.error("400 {}", errors);
-        return new ErrorResponse(e.getMessage());
     }
 
     @ExceptionHandler
@@ -55,7 +41,7 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Map<String, String> handleRequestException(final RequestException e) {
-        log.error("Исключение RequestException");
+        log.error("400 {}", e.getMessage());
         return Map.of("status", "400 - BAD_REQUEST",
                 "reason", "Incorrectly made request.",
                 "errorMessage", e.getMessage(),
@@ -74,5 +60,14 @@ public class ErrorHandler {
         );
     }
 
+    @ExceptionHandler
+    private ResponseEntity<Object> handlePSQLException(DataIntegrityViolationException e) {
+        log.info("409 {}", e.getMessage());
+        return new ResponseEntity<>(
+                Map.of("status", "409 - CONFLICT",
+                        "reason", "Нарушение целостности данных.",
+                        "errorMessage", e.getMessage(),
+                        "timestamp", LocalDateTime.now().toString()), HttpStatus.CONFLICT);
 
+    }
 }

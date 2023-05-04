@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
+import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
@@ -19,11 +20,5 @@ public class HitInDto {
     @NotBlank
     private String app;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private String timestamp;
-    public HitInDto(String app, String uri, String ip, String timestamp) {
-        this.app = app;
-        this.uri = uri;
-        this.ip = ip;
-        this.ip = timestamp;
-    }
+    private LocalDateTime timestamp;
 }

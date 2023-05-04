@@ -17,8 +17,9 @@ import java.util.List;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
     private final UserJpaRepository userRepository;
+
     @Override
     public List<UserDto> getUsers(int[] ids, Integer from, Integer size) {
         Sort startSort = Sort.by("name");

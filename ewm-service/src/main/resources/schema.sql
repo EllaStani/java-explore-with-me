@@ -2,7 +2,7 @@ DROP TABLE IF EXISTS users CASCADE;
 DROP TABLE IF EXISTS categories CASCADE;
 DROP TABLE IF EXISTS events CASCADE;
 DROP TABLE IF EXISTS compilations CASCADE;
-DROP TABLE IF EXISTS events_compilations CASCADE;
+DROP TABLE IF EXISTS compilations_events CASCADE;
 DROP TABLE IF EXISTS requests CASCADE;
 
 
@@ -58,8 +58,7 @@ CREATE TABLE compilations
 CREATE TABLE compilations_events
 (
     compilation_id INTEGER REFERENCES compilations (id),
-    event_id       INTEGER REFERENCES events (id),
-    PRIMARY KEY (compilation_id, event_id)
+    event_id       INTEGER REFERENCES events (id)
 );
 
 CREATE TABLE requests

@@ -2,7 +2,6 @@ package ru.practicum.compilation;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -23,10 +22,11 @@ import java.util.stream.Collectors;
 public class CompilationServiceImpl implements CompilationService {
     private final CompilationJpaRepository compRepository;
     private final EventJpaRepository eventRepository;
+
     @Override
     public List<CompilationDto> getCompilations(Boolean pinned, int from, int size) {
         Pageable pageable = FromSizeRequest.of(from, size, Sort.unsorted());
-        List<Compilation> compilations = compRepository.findByPinned(pinned, pageable);
+        List<Compilation> compilations = compRepository.findCompilationByPinnedIs(pinned, pageable);
         return CompilationMapper.mapToListCompilationDto(compilations);
     }
 
@@ -43,9 +43,9 @@ public class CompilationServiceImpl implements CompilationService {
         newCompilation.setPinned(compilationNewDto.getPinned());
         newCompilation.setTitle(compilationNewDto.getTitle());
         newCompilation.setEvents(compilationNewDto.getEvents()
-                        .stream()
-                        .map(id -> eventRepository.findById(id).get())
-                        .collect(Collectors.toList()));
+                .stream()
+                .map(id -> eventRepository.findById(id).get())
+                .collect(Collectors.toList()));
 
         compRepository.save(newCompilation);
         return CompilationMapper.mapToCompilationDto(newCompilation);
@@ -83,7 +83,7 @@ public class CompilationServiceImpl implements CompilationService {
         compRepository.deleteById(compId);
     }
 
-    private Compilation checkingExistCompilation(int compId){
+    private Compilation checkingExistCompilation(int compId) {
         return compRepository.findById(compId)
                 .orElseThrow(() -> new NotFoundException(String.format("Подборка с id=%s не найдена", compId)));
     }

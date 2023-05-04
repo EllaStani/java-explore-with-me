@@ -50,7 +50,7 @@ public class PrivateRequestController {
     @PatchMapping(value = "/{userId}/events/{eventId}/requests")
     public RequestUpdateStatusOutDto updateStatus(@PathVariable(value = "userId") int userId,
                                                   @PathVariable(value = "eventId") int eventId,
-                                                  @Validated @RequestBody RequestUpdateStatusInDto requestUpdateInDto) {
+                                                  @RequestBody RequestUpdateStatusInDto requestUpdateInDto) {
         RequestUpdateStatusOutDto requestUpdateOutDto = requestService.updateStatus(userId, eventId, requestUpdateInDto);
         log.info("API PrivateEvent. PATCH: Изменены данные запроса userId={}, eventId={} : {}",
                 userId, eventId, requestUpdateOutDto);

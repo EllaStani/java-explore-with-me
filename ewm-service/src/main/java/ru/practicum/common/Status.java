@@ -1,6 +1,6 @@
 package ru.practicum.common;
 
-public enum StatusRequest {
+public enum Status {
     CONFIRMED,
     REJECTED,
     PENDING,

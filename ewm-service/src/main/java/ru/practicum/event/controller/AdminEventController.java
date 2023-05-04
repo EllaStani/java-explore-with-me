@@ -24,19 +24,22 @@ public class AdminEventController {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
     public List<EventFullDto> getEvents(
-            @RequestParam(value = "users",required = false) int[] users,
+            @RequestParam(value = "users", required = false) int[] users,
             @RequestParam(value = "states", required = false) String[] states,
-            @RequestParam(value = "categories",required = false) int[] categories,
-            @RequestParam(value = "rangeStart") @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeStart,
-            @RequestParam(value = "rangeEnd") @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeEnd,
-            @RequestParam (value = "from", defaultValue = "0") @PositiveOrZero Integer from,
+            @RequestParam(value = "categories", required = false) int[] categories,
+            @RequestParam(value = "rangeStart", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+            LocalDateTime rangeStart,
+            @RequestParam(value = "rangeEnd", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+            LocalDateTime rangeEnd,
+            @RequestParam(value = "from", defaultValue = "0") @PositiveOrZero Integer from,
             @RequestParam(value = "size", defaultValue = "10") @Positive Integer size) {
-        System.out.println("----- 1 --------");
-        List<EventFullDto> eventFullDtos = eventService.getAdminEvents(users, states,categories,
-                rangeStart, rangeEnd, from, size);
-        log.info("API AdminEvent. Get-запрос: события по users={}, states={}, categories={}", users, categories);
+
+        log.info("API AdminEvent. GET: параметры запроса users={}, states={}, categories={}, Start={}, End={}",
+                users, states, categories, rangeStart, rangeEnd);
         log.info("from = {} size = {}", from, size);
-        log.info("Всего найдено событий={} : {}", eventFullDtos.size(), eventFullDtos);
+        List<EventFullDto> eventFullDtos = eventService.getAdminEvents(users, states, categories,
+                rangeStart, rangeEnd, from, size);
+        log.info("API AdminEvent. GET: найдено событий={} : {}", eventFullDtos.size(), eventFullDtos);
         return eventFullDtos;
     }
 
@@ -44,9 +47,11 @@ public class AdminEventController {
     @PatchMapping("/{eventId}")
     public EventFullDto updateEvent(@PathVariable int eventId,
                                     @RequestBody EventUpdateDto eventUpdateDto) {
-        System.out.println("----- 2 --------eventUpdateDto= " + eventUpdateDto);
+        log.info("API AdminEvent. PATCH: eventId={}, eventUpdateDto={}", eventId, eventUpdateDto);
+
         EventFullDto updateEvent = eventService.updateAdminEvent(eventId, eventUpdateDto);
-        log.info("API AdminEvent. Patch-запрос: обновлены данные события с id={} : {}", eventId, updateEvent);
+
+        log.info("API AdminEvent. PATCH: обновлены данные: {}", updateEvent);
         return updateEvent;
     }
 }

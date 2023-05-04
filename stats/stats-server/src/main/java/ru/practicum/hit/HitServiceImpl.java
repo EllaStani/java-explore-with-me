@@ -16,9 +16,9 @@ public class HitServiceImpl implements HitService {
     private final HitJpaRepository hitRepository;
 
     @Override
-    public List<HitDto> getHits(LocalDateTime start, LocalDateTime end, List<String> uri, boolean unique) {
+    public List<HitDto> getHits(LocalDateTime start, LocalDateTime end, List<String> uris, boolean unique) {
         List<HitDto> hitDtos;
-        if (uri == null) {
+        if (uris == null || uris.size() == 0) {
             if (unique == true) {
                 hitDtos = hitRepository.getHitsUniqueIp(start, end);
             } else {
@@ -26,18 +26,13 @@ public class HitServiceImpl implements HitService {
             }
         } else {
             if (unique == true) {
-                hitDtos = hitRepository.getHitsWithUriUniqueIp(start, end, uri);
+                hitDtos = hitRepository.getHitsWithUriUniqueIp(start, end, uris);
             } else {
-                hitDtos = hitRepository.getHitsWithUri(start, end, uri);
+                hitDtos = hitRepository.getHitsWithUri(start, end, uris);
             }
         }
         return hitDtos;
     }
-//
-//    @Override
-//    public Integer getCountHits(String uri) {
-//        return hitRepository.countByUri(uri);
-//    }
 
     @Transactional
     @Override

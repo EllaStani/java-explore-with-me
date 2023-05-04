@@ -24,11 +24,12 @@ public class Compilation {
 
     @Column(name = "title")
     private String title;
-    @ManyToMany (cascade = { CascadeType.ALL })
+
+    @ManyToMany(cascade = {CascadeType.ALL})
     @JoinTable(
-            name = "events_compilations",
-            joinColumns = {@JoinColumn(name = "compilations_id")},
-            inverseJoinColumns = {@JoinColumn(name = "events_id")}
+            name = "compilations_events",
+            joinColumns = {@JoinColumn(name = "compilation_id")},
+            inverseJoinColumns = {@JoinColumn(name = "event_id")}
     )
     private List<Event> events;
 

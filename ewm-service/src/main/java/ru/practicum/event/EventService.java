@@ -32,10 +32,4 @@ public interface EventService {
 
     EventFullDto updateAdminEvent(int eventId, EventUpdateDto eventUpdateDto);
 
-//    List<Event> getEventsByIds(List<Integer> events);
-//    EventDtoOutput getByIdWithCount(Integer id, HttpServletRequest request);
-//    List<Event> getFilteredEvents(
-//            Integer users, String state, Integer categories,
-//            String rangeStart,String rangeEnd, Integer from, Integer size);
-//    List<Event> getByCategoryId(Integer id);
 }

@@ -59,10 +59,4 @@ public class Event {
     @Column(name = "state")
     @Enumerated(EnumType.STRING)
     private State state;
-
-//    @AttributeOverrides({
-//            @AttributeOverride(name = "lat", column = @Column(name = "lat")),
-//            @AttributeOverride(name = "lon", column = @Column(name = "lon"))
-//    })
-
 }

@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.common.State;
-import ru.practicum.common.StatusRequest;
+import ru.practicum.common.Status;
 import ru.practicum.event.Event;
 import ru.practicum.event.EventJpaRepository;
 import ru.practicum.exception.ConflictException;
@@ -24,7 +24,7 @@ import java.util.List;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class RequestServiceImpl implements RequestService{
+public class RequestServiceImpl implements RequestService {
     private final RequestJpaRepository requestRepository;
     private final UserJpaRepository userRepository;
     private final EventJpaRepository eventRepository;
@@ -45,16 +45,16 @@ public class RequestServiceImpl implements RequestService{
     public ParticipationRequestDto saveNewRequest(int userId, int eventId) {
         Event event = checkingExistEvent(eventId);
 
-        if (event.getParticipantLimit() != 0) {
-            if (requestRepository.findRequestByRequesterId(eventId).size() >= event.getParticipantLimit()) {
-                log.error("Достигнут лимит участников на событие!");
-                throw new ConflictException("У события достигнут лимит участников!");
-            }
-        }
-
         if (event.getInitiator().getId() == userId) {
             log.error("Инициатор события не может добавить запрос на участие!");
             throw new ConflictException("Инициатор события не может добавить запрос на участие!");
+        }
+
+        if (event.getParticipantLimit() != 0) {
+            if (requestRepository.getCountConfirmedRequest(eventId, Status.CONFIRMED) >= event.getParticipantLimit()) {
+                log.error("Достигнут лимит участников на событие!");
+                throw new ConflictException("У события достигнут лимит участников!");
+            }
         }
 
         if (event.getState() != State.PUBLISHED) {
@@ -65,15 +65,16 @@ public class RequestServiceImpl implements RequestService{
         List<Request> requests = requestRepository.findRequestByEventIdAndRequesterId(eventId, userId);
 
         if (requests.size() == 0) {
-            checkingExistUser(userId);
+            User user = checkingExistUser(userId);
 
             Request request = new Request();
             request.setEvent(event);
+            request.setRequester(user);
 
             if (event.getRequestModeration() == false) {
-                request.setStatusRequest(StatusRequest.CONFIRMED);
+                request.setStatus(Status.CONFIRMED);
             } else {
-                request.setStatusRequest(StatusRequest.PENDING);
+                request.setStatus(Status.PENDING);
             }
             request.setCreated(LocalDateTime.now());
             log.info("Создан новый запрос на участие в событие eventId={} userId={} : {}", eventId, userId, request);
@@ -88,7 +89,7 @@ public class RequestServiceImpl implements RequestService{
     @Override
     public RequestUpdateStatusOutDto updateStatus(int userId, int eventId, RequestUpdateStatusInDto requestInDto) {
         Event event = checkingExistEvent(eventId);
-        int limit = event.getParticipantLimit();
+        Integer limit = event.getParticipantLimit();
 
         if (event.getInitiator().getId() != userId) {
             log.error("Пользователь не инициатор события!");
@@ -98,52 +99,49 @@ public class RequestServiceImpl implements RequestService{
         List<Request> requests = requestRepository.findAllByIdIn(requestInDto.getRequestIds());
 
         requests.forEach(request -> {
-            if (request.getStatusRequest() != StatusRequest.PENDING) {
+            if (request.getStatus() != Status.PENDING) {
                 log.info("Изменение статуса отклонено - заявки не имеют статус PENDING!");
                 throw new ConflictException("Заявки не имеют статус PENDING!");
             }
         });
 
-        Integer countConfirmedRequests = requestRepository.findRequestByEventIdAndStatusRequest(
-                eventId, StatusRequest.CONFIRMED.toString()).size();
-        if (countConfirmedRequests == limit) {
-            throw new RuntimeException("Лимит заявок для события исчерпан!");
-        }
-
-        if (requestInDto.getStatusRequest() == StatusRequest.REJECTED) {
+        if (requestInDto.getStatus() == Status.REJECTED) {
             log.info("Все заявки отклонены");
-            requests.forEach(request -> {
-                request.setStatusRequest(StatusRequest.REJECTED);
-
+            requests.forEach(r -> {
+                r.setStatus(Status.REJECTED);
             });
             requestRepository.saveAll(requests);
             return RequestMapper.mapToRequestUpdateStatusOutDto(new ArrayList<>(), requests);
         }
+        Integer countСonfirmations = requestRepository.getCountConfirmedRequest(eventId, Status.CONFIRMED);
+        if (countСonfirmations >= limit) {
+            throw new ConflictException("У события достигнут лимит участников!");
+        }
 
-        Request request;
-        List<Request> confirmRequests = new ArrayList<>();
-        List<Request> rejectRequests = new ArrayList<>(requests);
+        List<Request> confRequests = new ArrayList<>();
+        List<Request> rejRequests = new ArrayList<>(requests);
 
-        for (int i = 0; i < requests.size(); i++) {
-            if (countConfirmedRequests <= limit) {
-                request = requests.get(i);
-                request.setStatusRequest(StatusRequest.CONFIRMED);
-                confirmRequests.add(request);
-                rejectRequests.remove(request);
-                requestRepository.save(request);
-                countConfirmedRequests++;
+        for (Request req : requests) {
+            if (countСonfirmations < limit) {
+                req.setStatus(Status.CONFIRMED);
+                confRequests.add(req);
+                rejRequests.remove(req);
+                requestRepository.save(req);
+                countСonfirmations++;
             } else {
                 log.info("Лимит заявок для события исчерпан!");
                 break;
             }
         }
-        if (rejectRequests.size() > 0) {
-            rejectRequests.forEach(r -> {
-            r.setStatusRequest(StatusRequest.REJECTED);
+
+        if (rejRequests.size() > 0) {
+            rejRequests.forEach(r -> {
+                r.setStatus(Status.REJECTED);
+                requestRepository.save(r);
             });
-            requestRepository.saveAll(rejectRequests);
+            requestRepository.saveAll(rejRequests);
         }
-        return RequestMapper.mapToRequestUpdateStatusOutDto(confirmRequests, rejectRequests);
+        return RequestMapper.mapToRequestUpdateStatusOutDto(confRequests, rejRequests);
     }
 
     @Override
@@ -154,7 +152,7 @@ public class RequestServiceImpl implements RequestService{
             log.error("Пользователь не инициатор заявки!");
             throw new ConflictException("Пользователь не инициатор заявки!");
         }
-        request.setStatusRequest(StatusRequest.CANCELED);
+        request.setStatus(Status.CANCELED);
         log.info("Отменен запрос с id = {}", requestId);
         requestRepository.save(request);
         return RequestMapper.mapToParticipationRequestDto(request);

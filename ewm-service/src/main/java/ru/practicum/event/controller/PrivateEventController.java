@@ -46,10 +46,10 @@ public class PrivateEventController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/{userId}/events")
     public EventFullDto saveNewEvent(@PathVariable int userId,
-                                   @Validated @RequestBody EventNewDto eventNewDto) {
-        System.out.println("----- 3 --------");
+                                     @Validated @RequestBody EventNewDto eventNewDto) {
+        log.info("API PrivateEvent. POST: userId={}, eventNewDto={}", userId, eventNewDto);
         EventFullDto eventFullDto = eventService.saveNewEvent(userId, eventNewDto);
-        log.info("API PrivateEvent. POST: Добавлено событие для  userId={} : {}", userId, eventFullDto);
+        log.info("API PrivateEvent. POST: Добавлено событие: {}", userId, eventFullDto);
         return eventFullDto;
     }
 
@@ -58,10 +58,9 @@ public class PrivateEventController {
     public EventFullDto updateUser(@PathVariable(value = "userId") int userId,
                                    @PathVariable(value = "eventId") int eventId,
                                    @Validated @RequestBody EventUpdateDto eventUpdateDto) {
-        System.out.println("----- 4 --------");
+        log.info("API PrivateEvent. PATCH: userId={}, eventId={}", userId, eventId);
         EventFullDto eventFullDto = eventService.updatePrivateEvent(userId, eventId, eventUpdateDto);
-        log.info("API PrivateEvent. PATCH: Изменены данные события userId={}, eventId={} : {}",
-                userId, eventId, eventFullDto);
+        log.info("API PrivateEvent. PATCH: Обновлены данные: {}", eventFullDto);
         return eventFullDto;
     }
 }

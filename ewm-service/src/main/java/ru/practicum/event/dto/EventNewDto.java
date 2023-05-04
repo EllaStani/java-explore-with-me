@@ -21,27 +21,32 @@ public class EventNewDto {
     @NotBlank(message = "EventNewDto. Field: annotation не может быть пустым или содержать только пробелы")
     @Size(min = 20, max = 2000)
     private String annotation;
+
     @NotNull(message = "EventNewDto. Field: category не задано")
-    @NotBlank(message = "EventNewDto. Field: category не может быть пустым или содержать только пробелы")
     private Integer category;
+
     @NotNull(message = "EventNewDto. Field: description не задано")
     @NotBlank(message = "EventNewDto. Field: description не может быть пустым или содержать только пробелы")
     @Size(min = 20, max = 7000)
     private String description;
+
     @NotNull(message = "EventNewDto. Field: eventDate не задано")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime eventDate;
 
     @NotNull(message = "EventNewDto. Field: location не задано")
-//    @NotBlank(message = "EventNewDto. Field: location не может быть пустым")
-    private LocationDto locationDto;
+    private Location location;
+
     @Value("false")
     private Boolean paid;
+
     @PositiveOrZero
     @Value("0")
     private Integer participantLimit;
+
     @Value("true")
     private Boolean requestModeration;
+
     @NotNull(message = "EventNewDto. Field: title не задано")
     @NotBlank(message = "EventNewDto. Field: title не может быть пустым или содержать только пробелы")
     @Size(min = 3, max = 120)

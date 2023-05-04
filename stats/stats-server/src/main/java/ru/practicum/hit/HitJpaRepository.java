@@ -42,5 +42,4 @@ public interface HitJpaRepository extends JpaRepository<Hit, Integer> {
             "Group by h.app, h.uri " +
             "order by count(distinct  h.ip) desc")
     List<HitDto> getHitsUniqueIp(LocalDateTime start, LocalDateTime end);
-
 }

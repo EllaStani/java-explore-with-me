@@ -5,8 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.category.CategoryDto;
+import ru.practicum.category.dto.CategoryDto;
 import ru.practicum.category.CategoryService;
+import ru.practicum.category.dto.CategoryNewDto;
 
 @Slf4j
 @RestController
@@ -18,8 +19,8 @@ public class AdminCategoryController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public CategoryDto saveNewCategory(@Validated @RequestBody CategoryDto categoryDto) {
-        CategoryDto newCategoryDto = categoryService.saveNewCategory(categoryDto);
+    public CategoryDto saveNewCategory(@Validated @RequestBody CategoryNewDto categoryNewDto) {
+        CategoryDto newCategoryDto = categoryService.saveNewCategory(categoryNewDto);
         log.info("API AdminCategory. POST: Добавлена категория  {}", newCategoryDto);
         return newCategoryDto;
     }
@@ -27,8 +28,8 @@ public class AdminCategoryController {
     @ResponseStatus(HttpStatus.OK)
     @PatchMapping("/{catId}")
     public CategoryDto updateCategory(@PathVariable int catId,
-                                  @Validated @RequestBody CategoryDto categoryDto) {
-        CategoryDto updateCategoryDto = categoryService.updateCategory(catId, categoryDto);
+                                      @Validated @RequestBody CategoryNewDto categoryNewDto) {
+        CategoryDto updateCategoryDto = categoryService.updateCategory(catId, categoryNewDto);
         log.info("API AdminCategory. PATCH: Изменены данные категории {}, catId={}", updateCategoryDto, catId);
         return updateCategoryDto;
     }

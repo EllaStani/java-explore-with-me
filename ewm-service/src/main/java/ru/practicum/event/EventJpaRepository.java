@@ -15,24 +15,30 @@ public interface EventJpaRepository extends JpaRepository<Event, Integer> {
     Event findEventByIdAndInitiatorId(int eventId, int userId);
 
     @Query("SELECT e from Event e " +
-            "WHERE e.category.id IN :category " +
-            "AND e.paid = :paid " +
-            "AND e.publishedOn BETWEEN :start and :end " +
-            "AND e.state = :state and " +
-            "(lower(e.annotation) like %:text% or lower(e.description) like %:text%)")
-    List<Event> getEventsWithSort(String text, int[] category, boolean paid, LocalDateTime start,
-                                  LocalDateTime end, String state, Pageable pageable);
+            "WHERE (:categories is null OR e.category.id IN :categories) " +
+            "AND ((:start Is null OR :end Is null) OR " +
+            "(:start Is Not Null AND :end Is Not Null AND e.eventDate BETWEEN :start AND :end)) " +
+            "AND (:text is null OR (lower(e.annotation) like %:text% or lower(e.description) like %:text%)) " +
+            "AND e.paid = :paid")
+    List<Event> getEventsWithSort(@Param("categories") List<Integer> categories,
+                                  @Param("start") LocalDateTime start,
+                                  @Param("end") LocalDateTime end,
+                                  @Param("text") String text,
+                                  boolean paid,
+                                  Pageable pageable);
 
     @Query("SELECT e from Event e " +
-            "WHERE (coalesce(:users, null) is null OR e.initiator.id IN :users) " +
-            "AND (coalesce(:states, null) is null OR e.state IN :states) " +
-            "AND (coalesce(:categories, null) is null OR e.category IN :categories) " +
-            "AND (coalesce(:start, null) is null OR e.eventDate IN :start) " +
-            "AND (coalesce(:end, null) is null OR e.eventDate IN :end) ")
-    List<Event> getEventsFromAdmin(@Param("users") int[] users,
-                                   @Param("states") String[] states,
-                                   @Param("categories") int[] categories,
+            "WHERE (:users is null OR e.initiator.id IN :users) " +
+            "AND (:states is null OR e.state IN :states) " +
+            "AND (:categories is null OR e.category.id IN :categories)" +
+            "AND ((:start Is null OR :end Is null) OR " +
+            "(:start Is Not Null AND :end Is Not Null AND e.eventDate BETWEEN :start AND :end))"
+    )
+    List<Event> getEventsFromAdmin(@Param("users") List<Integer> users,
+                                   @Param("states") List<State> states,
+                                   @Param("categories") List<Integer> categories,
                                    @Param("start") LocalDateTime start,
                                    @Param("end") LocalDateTime end,
                                    Pageable pageable);
+
 }

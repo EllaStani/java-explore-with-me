@@ -1,7 +1,7 @@
 package ru.practicum.request;
 
 import lombok.*;
-import ru.practicum.common.StatusRequest;
+import ru.practicum.common.Status;
 import ru.practicum.event.Event;
 import ru.practicum.user.User;
 
@@ -25,7 +25,7 @@ public class Request {
     private LocalDateTime created;
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
-    private StatusRequest statusRequest;
+    private Status status;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "event_id")
@@ -37,5 +37,14 @@ public class Request {
 
     public int getIdEvent() {
         return this.event.getId();
+    }
+
+    @Override
+    public String toString() {
+        return "\n" + "Request = {" +
+                "   id=" + id + ", " +
+                "   status'" + status + ", " +
+                "   requester_id='" + requester.getId() + ", " +
+                "   event_id='" + event.getId();
     }
 }

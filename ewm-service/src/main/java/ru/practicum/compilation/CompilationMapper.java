@@ -1,9 +1,5 @@
 package ru.practicum.compilation;
 
-import org.springframework.data.domain.Page;
-import ru.practicum.category.Category;
-import ru.practicum.category.CategoryDto;
-import ru.practicum.category.CategoryMapper;
 import ru.practicum.compilation.dto.CompilationDto;
 import ru.practicum.compilation.dto.CompilationNewDto;
 

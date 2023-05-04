@@ -1,11 +1,10 @@
 package ru.practicum.request;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import ru.practicum.common.StatusRequest;
-import ru.practicum.compilation.Compilation;
+import org.springframework.data.jpa.repository.Query;
+import ru.practicum.common.Status;
 
 import java.util.List;
-import java.util.Set;
 
 public interface RequestJpaRepository extends JpaRepository<Request, Integer> {
     List<Request> findRequestByRequesterId(int userId);
@@ -14,8 +13,12 @@ public interface RequestJpaRepository extends JpaRepository<Request, Integer> {
 
     List<Request> findRequestByEventIdAndRequesterId(int eventId, int userId);
 
-    List<Request> findRequestByEventIdInAndStatusRequest(List<Integer> eventIds, StatusRequest status);
 
-    List<Request> findRequestByEventIdAndStatusRequest(int eventId, String status);
+    List<Request> findRequestByEventIdInAndStatus(List<Integer> eventIds, Status status);
+
+    List<Request> findRequestByEventIdAndStatus(int eventId, Status status);
+
+    @Query("select count (r.id) from Request r where r.event.id = ?1 and r.status = ?2")
+    Integer getCountConfirmedRequest(Integer eventId, Status state);
 
 }

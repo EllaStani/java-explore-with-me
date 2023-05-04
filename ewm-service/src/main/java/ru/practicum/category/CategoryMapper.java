@@ -1,9 +1,8 @@
 package ru.practicum.category;
 
 import org.springframework.data.domain.Page;
-import ru.practicum.user.User;
-import ru.practicum.user.UserMapper;
-import ru.practicum.user.dto.UserDto;
+import ru.practicum.category.dto.CategoryDto;
+import ru.practicum.category.dto.CategoryNewDto;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,6 +23,12 @@ public class CategoryMapper {
         Category category = new Category();
         category.setId(categoryDto.getId());
         category.setName(categoryDto.getName());
+        return category;
+    }
+
+    public static Category mapToNewCategory(CategoryNewDto categoryNewDto) {
+        Category category = new Category();
+        category.setName(categoryNewDto.getName());
         return category;
     }
 }
