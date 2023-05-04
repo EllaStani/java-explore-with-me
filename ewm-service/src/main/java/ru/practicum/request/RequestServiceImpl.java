@@ -19,6 +19,7 @@ import ru.practicum.user.UserJpaRepository;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @Service
@@ -90,13 +91,14 @@ public class RequestServiceImpl implements RequestService {
     public RequestUpdateStatusOutDto updateStatus(int userId, int eventId, RequestUpdateStatusInDto requestInDto) {
         Event event = checkingExistEvent(eventId);
         Integer limit = event.getParticipantLimit();
+        Integer reqConfirmed = 0;
 
         if (event.getInitiator().getId() != userId) {
             log.error("Пользователь не инициатор события!");
             throw new ConflictException("Пользователь не инициатор события!");
         }
 
-        List<Request> requests = requestRepository.findAllByIdIn(requestInDto.getRequestIds());
+        List<Request> requests = new ArrayList<>(requestRepository.findAllByIdIn(requestInDto.getRequestIds()));
 
         requests.forEach(request -> {
             if (request.getStatus() != Status.PENDING) {
@@ -113,8 +115,8 @@ public class RequestServiceImpl implements RequestService {
             requestRepository.saveAll(requests);
             return RequestMapper.mapToRequestUpdateStatusOutDto(new ArrayList<>(), requests);
         }
-        Integer countСonfirmations = requestRepository.getCountConfirmedRequest(eventId, Status.CONFIRMED);
-        if (countСonfirmations >= limit) {
+        reqConfirmed = requestRepository.getCountConfirmedRequest(eventId, Status.CONFIRMED);
+        if (Objects.equals(reqConfirmed, event.getParticipantLimit())) {
             throw new ConflictException("У события достигнут лимит участников!");
         }
 
@@ -122,12 +124,12 @@ public class RequestServiceImpl implements RequestService {
         List<Request> rejRequests = new ArrayList<>(requests);
 
         for (Request req : requests) {
-            if (countСonfirmations < limit) {
+            if (reqConfirmed < limit) {
                 req.setStatus(Status.CONFIRMED);
                 confRequests.add(req);
                 rejRequests.remove(req);
                 requestRepository.save(req);
-                countСonfirmations++;
+                reqConfirmed++;
             } else {
                 log.info("Лимит заявок для события исчерпан!");
                 break;

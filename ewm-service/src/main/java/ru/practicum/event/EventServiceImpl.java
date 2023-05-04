@@ -28,7 +28,6 @@ import ru.practicum.user.UserMapper;
 import ru.practicum.user.dto.UserShortDto;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 

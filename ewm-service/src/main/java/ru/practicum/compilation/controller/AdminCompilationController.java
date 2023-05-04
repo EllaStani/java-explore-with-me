@@ -20,18 +20,18 @@ public class AdminCompilationController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public CompilationDto saveNewCompilation(@Validated @RequestBody CompilationNewDto compilationNewDto) {
-        CompilationDto CompilationDto = compilationService.saveNewCompilation(compilationNewDto);
-        log.info("API AdminCompilation. POST: Добавлена новая подборка  {}", CompilationDto);
-        return CompilationDto;
+        CompilationDto compilationDto = compilationService.saveNewCompilation(compilationNewDto);
+        log.info("API AdminCompilation. POST: Добавлена новая подборка  {}", compilationDto);
+        return compilationDto;
     }
 
     @ResponseStatus(HttpStatus.OK)
     @PatchMapping("/{compId}")
     public CompilationDto updateCompilation(@PathVariable int compId,
                                             @Validated @RequestBody CompilationNewDto compilationNewDto) {
-        CompilationDto CompilationDto = compilationService.updateCompilation(compId, compilationNewDto);
-        log.info("API AdminCompilation. PATCH: Изменены данные подборки {}, compId={}", CompilationDto, compId);
-        return CompilationDto;
+        CompilationDto compilationDto = compilationService.updateCompilation(compId, compilationNewDto);
+        log.info("API AdminCompilation. PATCH: Изменены данные подборки {}, compId={}", compilationDto, compId);
+        return compilationDto;
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
