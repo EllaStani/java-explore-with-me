@@ -38,10 +38,11 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public List<ParticipationRequestDto> getRequestByUserIdAndEventId(int userId, int eventId) {
-        List<Request> requests = requestRepository.findRequestByEventIdAndRequesterId(eventId, userId);
+        List<Request> requests = requestRepository.findRequestByEventId(eventId);
         return RequestMapper.mapToListParticipationRequestDto(requests);
     }
 
+    @Transactional
     @Override
     public ParticipationRequestDto saveNewRequest(int userId, int eventId) {
         Event event = checkingExistEvent(eventId);
@@ -87,6 +88,7 @@ public class RequestServiceImpl implements RequestService {
         }
     }
 
+    @Transactional
     @Override
     public RequestUpdateStatusOutDto updateStatus(int userId, int eventId, RequestUpdateStatusInDto requestInDto) {
         Event event = checkingExistEvent(eventId);
@@ -146,6 +148,7 @@ public class RequestServiceImpl implements RequestService {
         return RequestMapper.mapToRequestUpdateStatusOutDto(confRequests, rejRequests);
     }
 
+    @Transactional
     @Override
     public ParticipationRequestDto cancelRequest(int userId, int requestId) {
         Request request = requestRepository.findById(requestId).get();
@@ -159,6 +162,7 @@ public class RequestServiceImpl implements RequestService {
         requestRepository.save(request);
         return RequestMapper.mapToParticipationRequestDto(request);
     }
+
 
     private User checkingExistUser(int userId) {
         return userRepository.findById(userId)

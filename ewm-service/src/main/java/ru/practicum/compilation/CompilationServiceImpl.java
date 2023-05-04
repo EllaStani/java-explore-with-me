@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.common.FromSizeRequest;
 import ru.practicum.compilation.dto.CompilationDto;
 import ru.practicum.compilation.dto.CompilationNewDto;
+import ru.practicum.compilation.dto.CompilationUpdateDto;
 import ru.practicum.event.EventJpaRepository;
 import ru.practicum.exception.NotFoundException;
 
@@ -53,19 +54,19 @@ public class CompilationServiceImpl implements CompilationService {
 
     @Transactional
     @Override
-    public CompilationDto updateCompilation(int compId, CompilationNewDto compilationNewDto) {
+    public CompilationDto updateCompilation(int compId, CompilationUpdateDto compilationUpdateDto) {
         Compilation updateCompilation = checkingExistCompilation(compId);
 
-        if (compilationNewDto.getPinned() != null) {
-            updateCompilation.setPinned(compilationNewDto.getPinned());
+        if (compilationUpdateDto.getPinned() != null) {
+            updateCompilation.setPinned(compilationUpdateDto.getPinned());
         }
 
-        if (compilationNewDto.getTitle() != null) {
-            updateCompilation.setTitle(compilationNewDto.getTitle());
+        if (compilationUpdateDto.getTitle() != null) {
+            updateCompilation.setTitle(compilationUpdateDto.getTitle());
         }
 
-        if (!compilationNewDto.getEvents().isEmpty() && (compilationNewDto.getEvents() != null)) {
-            updateCompilation.getEvents().addAll(compilationNewDto.getEvents()
+        if (!compilationUpdateDto.getEvents().isEmpty() && (compilationUpdateDto.getEvents() != null)) {
+            updateCompilation.getEvents().addAll(compilationUpdateDto.getEvents()
                     .stream()
                     .map(id -> eventRepository.findById(id).get())
                     .collect(Collectors.toList()));
