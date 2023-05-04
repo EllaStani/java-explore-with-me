@@ -262,8 +262,8 @@ public class EventServiceImpl implements EventService {
 
     private Event checkingExistEventByUserId(int userId, int eventId) {
         Event event = checkingExistEvent(eventId);
-        if (event.getInitiator().getId() == userId) {
-            new NotFoundException(String.format("Событие с id=%s для пользователя с id=%s не найдено", eventId, userId));
+        if (event.getInitiator().getId() != userId) {
+            throw new ConflictException(String.format("Пользователь не инициатор события."));
         }
         return event;
     }
