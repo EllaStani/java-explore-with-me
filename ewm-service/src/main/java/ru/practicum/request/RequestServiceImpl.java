@@ -23,7 +23,8 @@ import java.util.Objects;
 
 @Slf4j
 @Service
-@Transactional(readOnly = true)
+//@Transactional(readOnly = true)
+@Transactional
 @RequiredArgsConstructor
 public class RequestServiceImpl implements RequestService {
     private final RequestJpaRepository requestRepository;
@@ -38,7 +39,7 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public List<ParticipationRequestDto> getRequestByUserIdAndEventId(int userId, int eventId) {
-        List<Request> requests = requestRepository.findRequestByEventIdAndRequesterId(eventId, userId);
+        List<Request> requests = requestRepository.findRequestByEventId(eventId);
         return RequestMapper.mapToListParticipationRequestDto(requests);
     }
 

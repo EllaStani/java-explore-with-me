@@ -33,7 +33,8 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-@Transactional(readOnly = true)
+//@Transactional(readOnly = true)
+@Transactional
 @RequiredArgsConstructor
 @ComponentScan(basePackages = {"hit"})
 public class EventServiceImpl implements EventService {

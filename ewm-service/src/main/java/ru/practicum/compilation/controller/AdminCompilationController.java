@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.compilation.CompilationService;
 import ru.practicum.compilation.dto.CompilationDto;
 import ru.practicum.compilation.dto.CompilationNewDto;
+import ru.practicum.compilation.dto.CompilationUpdateDto;
 
 @Slf4j
 @RestController
@@ -28,8 +29,8 @@ public class AdminCompilationController {
     @ResponseStatus(HttpStatus.OK)
     @PatchMapping("/{compId}")
     public CompilationDto updateCompilation(@PathVariable int compId,
-                                            @Validated @RequestBody CompilationNewDto compilationNewDto) {
-        CompilationDto compilationDto = compilationService.updateCompilation(compId, compilationNewDto);
+                                            @Validated @RequestBody CompilationUpdateDto compilationUpdateDto) {
+        CompilationDto compilationDto = compilationService.updateCompilation(compId, compilationUpdateDto);
         log.info("API AdminCompilation. PATCH: Изменены данные подборки {}, compId={}", compilationDto, compId);
         return compilationDto;
     }
