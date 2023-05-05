@@ -34,7 +34,7 @@ public class AdminEventController {
             @RequestParam(value = "from", defaultValue = "0") @PositiveOrZero Integer from,
             @RequestParam(value = "size", defaultValue = "10") @Positive Integer size) {
 
-        log.info("3==================API AdminEvent. GET: параметры запроса users={}, states={}, categories={}, Start={}, End={}",
+        log.info("API AdminEvent. GET: параметры запроса users={}, states={}, categories={}, Start={}, End={}",
                 users, states, categories, rangeStart, rangeEnd);
         log.info("from = {} size = {}", from, size);
         List<EventFullDto> eventFullDtos = eventService.getAdminEvents(users, states, categories,
@@ -47,7 +47,7 @@ public class AdminEventController {
     @PatchMapping("/{eventId}")
     public EventFullDto updateEvent(@PathVariable int eventId,
                                    @RequestBody EventUpdateDto eventUpdateDto) {
-        log.info("4================== API AdminEvent. PATCH: eventId={}, eventUpdateDto={}", eventId, eventUpdateDto);
+        log.info("API AdminEvent. PATCH: eventId={}, eventUpdateDto={}", eventId, eventUpdateDto);
 
         EventFullDto updateEvent = eventService.updateAdminEvent(eventId, eventUpdateDto);
 
