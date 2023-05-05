@@ -27,7 +27,7 @@ public class EventUpdateDto {
     @PositiveOrZero
     private Integer participantLimit;
     private Boolean requestModeration;
-    private StateAction stateAction;
+    private String stateAction;
     @Size(min = 3, max = 120)
     private String title;
 }

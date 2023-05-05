@@ -228,7 +228,7 @@ public class EventServiceImpl implements EventService {
     @Override
     public EventFullDto updateAdminEvent(int eventId, EventUpdateDto eventUpdateDto) {
         Event event = checkingExistEvent(eventId);
-
+        System.out.println("eventUpdateDto = " + eventUpdateDto.getStateAction());
         if (eventUpdateDto.getEventDate() != null && event.getPublishedOn() != null) {
             if (eventUpdateDto.getEventDate().isAfter(event.getPublishedOn().plusHours(1))) {
                 log.info("Дата начала события {} - не может быть раньше, чем за час от даты публикации",
@@ -263,7 +263,7 @@ public class EventServiceImpl implements EventService {
     private Event checkingExistEventByUserId(int userId, int eventId) {
         Event event = checkingExistEvent(eventId);
         if (event.getInitiator().getId() != userId) {
-            throw new ConflictException(String.format("Пользователь не инициатор события."));
+            throw new ConflictException("Пользователь не инициатор события.");
         }
         return event;
     }
@@ -313,18 +313,18 @@ public class EventServiceImpl implements EventService {
             event.setTitle(eventUpdateDto.getTitle());
         }
 
-        if (eventUpdateDto.getStateAction().equals(StateAction.CANCEL_REVIEW)) {    // user
+        if (eventUpdateDto.getStateAction().equals(StateAction.CANCEL_REVIEW.toString())) {    // user
             if (event.getState().equals(State.PENDING)) {
                 event.setState(State.CANCELED);
             } else {
                 throw new ConflictException("Отменить можно только событие в состоянии ожидания модерации.");
             }
         }
-        if (eventUpdateDto.getStateAction().equals(StateAction.SEND_TO_REVIEW)) {   // user
+        if (eventUpdateDto.getStateAction().equals(StateAction.SEND_TO_REVIEW.toString())) {   // user
             event.setState(State.PENDING);
         }
 
-        if (eventUpdateDto.getStateAction().equals(StateAction.PUBLISH_EVENT)) {    //admin
+        if (eventUpdateDto.getStateAction().equals(StateAction.PUBLISH_EVENT.toString())) {    //admin
             if (event.getState().equals(State.PUBLISHED)) {
                 throw new ConflictException("Событие уже опубликовано");
             }
@@ -335,7 +335,7 @@ public class EventServiceImpl implements EventService {
             event.setPublishedOn(LocalDateTime.now());
         }
 
-        if (eventUpdateDto.getStateAction().equals(StateAction.REJECT_EVENT)) { //admin
+        if (eventUpdateDto.getStateAction().equals(StateAction.REJECT_EVENT.toString())) { //admin
             if (event.getState().equals(State.PUBLISHED)) {
                 throw new ConflictException("Событие уже опубликовано.");
             }
