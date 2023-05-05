@@ -257,7 +257,7 @@ public class EventServiceImpl implements EventService {
 
     private Event checkingExistEvent(int eventId) {
         return eventRepository.findById(eventId)
-                .orElseThrow(() -> new NotFoundException(String.format("Событие с id=%s не найдено", eventId)));
+                .orElseThrow(() -> new ConflictException(String.format("Событие с id=%s не найдено", eventId)));
     }
 
     private Event checkingExistEventByUserId(int userId, int eventId) {
