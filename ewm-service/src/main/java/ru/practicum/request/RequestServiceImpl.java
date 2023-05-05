@@ -171,6 +171,6 @@ public class RequestServiceImpl implements RequestService {
 
     private Event checkingExistEvent(int eventId) {
         return eventRepository.findById(eventId)
-                .orElseThrow(() -> new NotFoundException(String.format("Событие с id=%s не найдено", eventId)));
+                .orElseThrow(() -> new ConflictException(String.format("Событие с id=%s не найдено", eventId)));
     }
 }

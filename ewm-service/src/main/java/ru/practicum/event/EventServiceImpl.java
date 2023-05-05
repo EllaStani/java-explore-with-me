@@ -228,7 +228,7 @@ public class EventServiceImpl implements EventService {
     @Override
     public EventFullDto updateAdminEvent(int eventId, EventUpdateDto eventUpdateDto) {
         Event event = checkingExistEvent(eventId);
-        System.out.println("eventUpdateDto = " + eventUpdateDto.getStateAction());
+        System.out.println("-------------eventUpdateDto = " + eventUpdateDto.getStateAction());
         if (eventUpdateDto.getEventDate() != null && event.getPublishedOn() != null) {
             if (eventUpdateDto.getEventDate().isAfter(event.getPublishedOn().plusHours(1))) {
                 log.info("Дата начала события {} - не может быть раньше, чем за час от даты публикации",
