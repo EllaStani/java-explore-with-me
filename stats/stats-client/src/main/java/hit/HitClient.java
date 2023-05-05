@@ -19,7 +19,7 @@ import java.util.Objects;
 @Slf4j
 @RequiredArgsConstructor
 public class HitClient {
-    @Value("http://localhost:9090")
+    @Value("http://stats-server:9090")
     private String local;
     private final RestTemplate restTemplate = new RestTemplate();
     DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
