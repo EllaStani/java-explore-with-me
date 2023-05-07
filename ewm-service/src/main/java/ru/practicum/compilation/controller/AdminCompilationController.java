@@ -10,6 +10,8 @@ import ru.practicum.compilation.dto.CompilationDto;
 import ru.practicum.compilation.dto.CompilationNewDto;
 import ru.practicum.compilation.dto.CompilationUpdateDto;
 
+import javax.validation.Valid;
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -20,7 +22,8 @@ public class AdminCompilationController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public CompilationDto saveNewCompilation(@Validated @RequestBody CompilationNewDto compilationNewDto) {
+    public CompilationDto saveNewCompilation(@Valid @RequestBody CompilationNewDto compilationNewDto) {
+        log.info("API AdminCompilation. POST: параметры compilationNewDto={}", compilationNewDto);
         CompilationDto compilationDto = compilationService.saveNewCompilation(compilationNewDto);
         log.info("API AdminCompilation. POST: Добавлена новая подборка  {}", compilationDto);
         return compilationDto;
@@ -29,7 +32,8 @@ public class AdminCompilationController {
     @ResponseStatus(HttpStatus.OK)
     @PatchMapping("/{compId}")
     public CompilationDto updateCompilation(@PathVariable int compId,
-                                            @Validated @RequestBody CompilationUpdateDto compilationUpdateDto) {
+                                            @Valid @RequestBody CompilationUpdateDto compilationUpdateDto) {
+        log.info("API AdminCompilation. PATCH: параметры compId={}, updateDto={}", compId, compilationUpdateDto);
         CompilationDto compilationDto = compilationService.updateCompilation(compId, compilationUpdateDto);
         log.info("API AdminCompilation. PATCH: Изменены данные подборки {}, compId={}", compilationDto, compId);
         return compilationDto;
@@ -38,7 +42,7 @@ public class AdminCompilationController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{compId}")
     public void deleteCompilation(@PathVariable Integer compId) {
+        log.info("API AdminCompilation. DELETE: Удаление подборки compId={}", compId);
         compilationService.deleteCompilationById(compId);
-        log.info("API AdminCompilation. DELETE: Удалена подборка compId={}", compId);
     }
 }

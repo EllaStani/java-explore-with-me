@@ -14,7 +14,6 @@ import ru.practicum.event.EventJpaRepository;
 import ru.practicum.exception.NotFoundException;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -40,16 +39,12 @@ public class CompilationServiceImpl implements CompilationService {
     @Transactional
     @Override
     public CompilationDto saveNewCompilation(CompilationNewDto compilationNewDto) {
-        Compilation newCompilation = new Compilation();
-        newCompilation.setPinned(compilationNewDto.getPinned());
-        newCompilation.setTitle(compilationNewDto.getTitle());
-        newCompilation.setEvents(compilationNewDto.getEvents()
-                .stream()
-                .map(id -> eventRepository.findById(id).get())
-                .collect(Collectors.toList()));
-
-        compRepository.save(newCompilation);
-        return CompilationMapper.mapToCompilationDto(newCompilation);
+        Compilation compilation = new Compilation();
+        compilation.setPinned(compilationNewDto.getPinned());
+        compilation.setTitle(compilationNewDto.getTitle());
+        compilation.setEvents(eventRepository.findEventByIdIn(compilationNewDto.getEvents()));
+        compRepository.save(compilation);
+        return CompilationMapper.mapToCompilationDto(compilation);
     }
 
     @Transactional
@@ -66,12 +61,8 @@ public class CompilationServiceImpl implements CompilationService {
         }
 
         if (!compilationUpdateDto.getEvents().isEmpty() && (compilationUpdateDto.getEvents() != null)) {
-            updateCompilation.getEvents().addAll(compilationUpdateDto.getEvents()
-                    .stream()
-                    .map(id -> eventRepository.findById(id).get())
-                    .collect(Collectors.toList()));
+            updateCompilation.setEvents(eventRepository.findEventByIdIn(compilationUpdateDto.getEvents()));
         }
-
 
         compRepository.save(updateCompilation);
         return CompilationMapper.mapToCompilationDto(updateCompilation);

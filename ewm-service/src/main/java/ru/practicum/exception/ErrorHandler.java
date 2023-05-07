@@ -66,7 +66,6 @@ public class ErrorHandler {
         return new ResponseEntity<>(
                 Map.of("status", "409 - CONFLICT",
                         "reason", "Нарушение целостности данных.",
-                        "errorMessage", e.getMessage(),
                         "timestamp", LocalDateTime.now().toString()), HttpStatus.CONFLICT);
 
     }

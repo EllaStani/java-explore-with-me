@@ -73,7 +73,7 @@ public class RequestServiceImpl implements RequestService {
             request.setEvent(event);
             request.setRequester(user);
 
-            if (event.getRequestModeration() == false) {
+            if (!event.getRequestModeration()) {
                 request.setStatus(Status.CONFIRMED);
             } else {
                 request.setStatus(Status.PENDING);

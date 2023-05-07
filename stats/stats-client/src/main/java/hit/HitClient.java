@@ -20,6 +20,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class HitClient {
     @Value("http://stats-server:9090")
+
     private String local;
     private final RestTemplate restTemplate = new RestTemplate();
     DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -42,6 +43,7 @@ public class HitClient {
                 uriBuilder.append("&uris=").append(uri);
             }
         }
+
         if (unique != null) {
             uriBuilder.append("&unique=").append(unique);
         }
@@ -50,17 +52,9 @@ public class HitClient {
         return Arrays.asList(Objects.requireNonNull(list.getBody()));
     }
 
-    public void saveNewHit(HitInDto hitInDto) {
+    public void saveNewHit(String ip, String uri, String app) {
+        HitInDto hitInDto = new HitInDto(0, ip, uri, app, LocalDateTime.now());
         log.info("HitClient. Запрос на сохранение статистики: {}", hitInDto);
         restTemplate.postForLocation(local + "/hit", hitInDto);
-    }
-
-    public static HitInDto makeHitInDto(String ip, String uri, String app) {
-        HitInDto hitInDto = new HitInDto();
-        hitInDto.setIp(ip);
-        hitInDto.setUri(uri);
-        hitInDto.setApp(app);
-        hitInDto.setTimestamp(LocalDateTime.now());
-        return hitInDto;
     }
 }

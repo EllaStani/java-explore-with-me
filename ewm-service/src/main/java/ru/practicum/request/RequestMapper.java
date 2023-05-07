@@ -18,10 +18,9 @@ public class RequestMapper {
     }
 
     public static List<ParticipationRequestDto> mapToListParticipationRequestDto(List<Request> requests) {
-        List<ParticipationRequestDto> requestDtos = requests.stream()
+        return requests.stream()
                 .map(RequestMapper::mapToParticipationRequestDto)
                 .collect(Collectors.toList());
-        return requestDtos;
     }
 
     public static RequestUpdateStatusOutDto mapToRequestUpdateStatusOutDto(

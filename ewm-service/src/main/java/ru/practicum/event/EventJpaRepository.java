@@ -10,9 +10,11 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface EventJpaRepository extends JpaRepository<Event, Integer> {
+    List<Event> findEventByIdIn(List<Integer> eventIds);
+
     List<Event> findEventByInitiatorId(int userId, Pageable pageable);
 
-    Event findEventByIdAndInitiatorId(int eventId, int userId);
+    List<Event> findEventByCategoryId(int categoryId);
 
     @Query("SELECT e from Event e " +
             "WHERE (:categories is null OR e.category.id IN :categories) " +
@@ -28,7 +30,7 @@ public interface EventJpaRepository extends JpaRepository<Event, Integer> {
                                   boolean paid,
                                   Pageable pageable);
 
-        @Query("SELECT e from Event e " +
+    @Query("SELECT e from Event e " +
             "WHERE (:users is null OR e.initiator.id IN :users) " +
             "AND (:states is null OR e.state IN :states) " +
             "AND (:categories is null OR e.category.id IN :categories)" +

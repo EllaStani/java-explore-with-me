@@ -22,13 +22,12 @@ import java.util.List;
 @RequestMapping(path = "/events")
 public class PublicEventController {
     private final EventService eventService;
-    private final HttpServletRequest request;
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
     public List<EventShortDto> getEvents(
             @RequestParam(value = "text", required = false) String text,
-            @RequestParam(value = "categories", required = false) int[] categories,
+            @RequestParam(value = "categories", required = false) List<Integer> categories,
             @RequestParam(value = "paid", required = false) boolean paid,
             @RequestParam(value = "rangeStart", required = false)
             @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeStart,
@@ -37,10 +36,11 @@ public class PublicEventController {
             @RequestParam(value = "onlyAvailable", defaultValue = "false") boolean onlyAvailable,
             @RequestParam(value = "sort", defaultValue = "EVENT_DATE") SortMethod sort,
             @RequestParam(value = "from", defaultValue = "0") @PositiveOrZero Integer from,
-            @RequestParam(value = "size", defaultValue = "10") @Positive Integer size) {
+            @RequestParam(value = "size", defaultValue = "10") @Positive Integer size,
+            HttpServletRequest request) {
 
         log.info("API PublicEvent. GET: параметры поиска: text={}, categories={}, paid={}, " +
-                        "rangeStart={}, onlyAvailable={}, sort={}", text, categories, paid, rangeStart,
+                        "rangeStart={}, rangeEnd={},onlyAvailable={}, sort={}", text, categories, paid, rangeStart,
                 rangeEnd, onlyAvailable, sort);
 
         List<EventShortDto> eventShortDtos = eventService.getPublicEventsWithSort(text, categories, paid,
@@ -51,8 +51,8 @@ public class PublicEventController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{eventId}")
-    public EventFullDto getEventById(@PathVariable Integer eventId) {
-        log.info("API PublicEvent. GET:  eventId={}", eventId);
+    public EventFullDto getEventById(@PathVariable Integer eventId, HttpServletRequest request) {
+        log.info("API PublicEvent. GET: параметры поиска: eventId={}", eventId);
         EventFullDto eventFullDto = eventService.getPublicEventById(eventId, request.getRemoteAddr());
         log.info("API PublicEvent. GET:  найдено событие: {}", eventFullDto);
         return eventFullDto;

@@ -10,6 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.category.dto.CategoryDto;
 import ru.practicum.category.dto.CategoryNewDto;
 import ru.practicum.common.FromSizeRequest;
+import ru.practicum.event.EventJpaRepository;
+import ru.practicum.exception.ConflictException;
 import ru.practicum.exception.NotFoundException;
 
 import java.util.List;
@@ -20,6 +22,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
     private final CategoryJpaRepository categoryRepository;
+    private final EventJpaRepository eventRepository;
 
     @Override
     public List<CategoryDto> getCategories(Integer from, Integer size) {
@@ -57,8 +60,13 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public void deleteCategoryById(int catId) {
         checkingExistCategory(catId);
-        log.info("CategoryService: Удаление категории с id {}", catId);
-        categoryRepository.deleteById(catId);
+        if (eventRepository.findEventByCategoryId(catId).size() == 0) {
+            log.info("Удалена категория с id = {}", catId);
+            categoryRepository.deleteById(catId);
+        } else {
+            log.error("Нельзя удалить категорию, в которой есть события");
+            throw new ConflictException("Нельзя удалить категорию, в которой есть события");
+        }
     }
 
     private Category checkingExistCategory(int catId) {

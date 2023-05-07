@@ -25,9 +25,9 @@ public class PublicCategoryController {
     public List<CategoryDto> getCategories(
             @RequestParam(value = "from", defaultValue = "0") @PositiveOrZero Integer from,
             @RequestParam(value = "size", defaultValue = "10") @Positive Integer size) {
+        log.info("API PublicCategory. GET: параметры from = {}, size = {}", from, size);
         List<CategoryDto> categoryDtos = categoryService.getCategories(from, size);
-        log.info("API PublicCategory. Get-запрос: параметры from = {}, size = {}", from, size);
-        log.info("API PublicCategory. Get-запрос: найдено {} категорий: {}", categoryDtos.size(), categoryDtos);
+        log.info("API PublicCategory. GET: найдено категорий - {}: {}", categoryDtos.size(), categoryDtos);
         return categoryDtos;
     }
 
@@ -35,7 +35,7 @@ public class PublicCategoryController {
     @GetMapping("/{catId}")
     public CategoryDto getCategoryById(@PathVariable int catId) {
         CategoryDto categoryDto = categoryService.getCategoryById(catId);
-        log.info("API PublicCategory. Get-запрос:  найдена категория {}, catId={}", categoryDto, catId);
+        log.info("API PublicCategory. GET:  найдена категория {}, catId={}", categoryDto, catId);
         return categoryDto;
     }
 }

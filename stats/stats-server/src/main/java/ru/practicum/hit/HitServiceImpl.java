@@ -19,13 +19,13 @@ public class HitServiceImpl implements HitService {
     public List<HitDto> getHits(LocalDateTime start, LocalDateTime end, List<String> uris, boolean unique) {
         List<HitDto> hitDtos;
         if (uris == null || uris.size() == 0) {
-            if (unique == true) {
+            if (unique) {
                 hitDtos = hitRepository.getHitsUniqueIp(start, end);
             } else {
                 hitDtos = hitRepository.getHits(start, end);
             }
         } else {
-            if (unique == true) {
+            if (unique) {
                 hitDtos = hitRepository.getHitsWithUriUniqueIp(start, end, uris);
             } else {
                 hitDtos = hitRepository.getHitsWithUri(start, end, uris);
@@ -38,6 +38,6 @@ public class HitServiceImpl implements HitService {
     @Override
     public HitInDto saveNewHit(HitInDto hitDto) {
         Hit newHit = hitRepository.save(HitMapper.mapToHit(hitDto));
-        return newHit == null ? null : HitMapper.mapToHitInDto(newHit);
+        return HitMapper.mapToHitInDto(newHit);
     }
 }

@@ -1,6 +1,5 @@
 package ru.practicum.event;
 
-
 import ru.practicum.category.Category;
 import ru.practicum.category.dto.CategoryDto;
 import ru.practicum.event.dto.EventFullDto;
@@ -11,7 +10,6 @@ import ru.practicum.user.User;
 import ru.practicum.user.dto.UserShortDto;
 
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 public class EventMapper {
@@ -36,20 +34,9 @@ public class EventMapper {
     }
 
     public static List<EventFullDto> mapToListEventFullDto(List<Event> events) {
-        List<EventFullDto> eventFullDtos = events.stream()
+        return events.stream()
                 .map(EventMapper::mapToEventFullDto)
                 .collect(Collectors.toList());
-        return eventFullDtos;
-    }
-
-    public static List<EventFullDto> mapToListEventFullDtoWithViews(List<Event> events, Map<Integer, String> statViewsMap) {
-        List<EventFullDto> eventFullDtos = events.stream()
-                .map(EventMapper::mapToEventFullDto)
-                .collect(Collectors.toList());
-        eventFullDtos.forEach(e -> {
-            e.setViews(Integer.valueOf(statViewsMap.get(e.getId())));
-        });
-        return eventFullDtos;
     }
 
     public static Event mapToEvent(User initiator, Category category, EventNewDto eventNewDto) {
@@ -102,10 +89,9 @@ public class EventMapper {
     }
 
     public static List<EventShortDto> mapToListEventShortDto(List<Event> events) {
-        List<EventShortDto> eventShortDtos = events.stream()
+        return events.stream()
                 .map(EventMapper::mapToEventShortDto)
                 .collect(Collectors.toList());
-        return eventShortDtos;
     }
 
     public static EventShortDto mapToEventShortFromFullDto(EventFullDto eventFullDto) {
@@ -123,9 +109,8 @@ public class EventMapper {
     }
 
     public static List<EventShortDto> mapToListEventShortFromFullDto(List<EventFullDto> eventFullDtos) {
-        List<EventShortDto> eventShortDtos = eventFullDtos.stream()
+        return eventFullDtos.stream()
                 .map(EventMapper::mapToEventShortFromFullDto)
                 .collect(Collectors.toList());
-        return eventShortDtos;
     }
 }

@@ -1,6 +1,7 @@
 package ru.practicum.event;
 
 import ru.practicum.common.SortMethod;
+import ru.practicum.common.State;
 import ru.practicum.event.dto.EventFullDto;
 import ru.practicum.event.dto.EventNewDto;
 import ru.practicum.event.dto.EventShortDto;
@@ -11,11 +12,11 @@ import java.util.List;
 
 public interface EventService {
 
-    List<EventFullDto> getAdminEvents(int[] users, String[] states, int[] categories,
+    List<EventFullDto> getAdminEvents(List<Integer> users, List<State> states, List<Integer> categories,
                                       LocalDateTime rangeStart, LocalDateTime rangeEnd,
                                       int from, int size);
 
-    List<EventShortDto> getPublicEventsWithSort(String text, int[] categories, boolean paid,
+    List<EventShortDto> getPublicEventsWithSort(String text, List<Integer> categories, boolean paid,
                                                 LocalDateTime rangeStart, LocalDateTime rangeEnd,
                                                 boolean onlyAvailable, SortMethod sort, int from,
                                                 int size, String ip);

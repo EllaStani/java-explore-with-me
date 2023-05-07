@@ -11,6 +11,7 @@ import ru.practicum.event.dto.EventNewDto;
 import ru.practicum.event.dto.EventShortDto;
 import ru.practicum.event.dto.EventUpdateDto;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
@@ -46,8 +47,8 @@ public class PrivateEventController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/{userId}/events")
     public EventFullDto saveNewEvent(@PathVariable int userId,
-                                     @Validated @RequestBody EventNewDto eventNewDto) {
-        log.info("1=================== API PrivateEvent. POST параметры: userId={}, eventNewDto={}", userId, eventNewDto);
+                                     @Valid @RequestBody EventNewDto eventNewDto) {
+        log.info("API PrivateEvent. POST параметры: userId={}, eventNewDto={}", userId, eventNewDto);
         EventFullDto eventFullDto = eventService.saveNewEvent(userId, eventNewDto);
         log.info("API PrivateEvent. POST: Добавлено событие: {}", eventFullDto);
         return eventFullDto;
@@ -57,8 +58,8 @@ public class PrivateEventController {
     @PatchMapping("/{userId}/events/{eventId}")
     public EventFullDto updateUser(@PathVariable(value = "userId") int userId,
                                    @PathVariable(value = "eventId") int eventId,
-                                   @Validated @RequestBody EventUpdateDto eventUpdateDto) {
-        log.info("2============== API PrivateEvent. PATCH параметры: userId={}, eventId={}, eventUpdateDto",
+                                   @Valid @RequestBody EventUpdateDto eventUpdateDto) {
+        log.info("API PrivateEvent. PATCH параметры: userId={}, eventId={}, eventUpdateDto={}",
                 userId, eventId, eventUpdateDto);
         EventFullDto eventFullDto = eventService.updatePrivateEvent(userId, eventId, eventUpdateDto);
         log.info("API PrivateEvent. PATCH: Обновлены данные: {}", eventFullDto);
