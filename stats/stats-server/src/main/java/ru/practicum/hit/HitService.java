@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface HitService {
 
-    List<HitDto> getHits(LocalDateTime start, LocalDateTime end, String[] uri, boolean unique);
+    List<HitDto> getHits(LocalDateTime start, LocalDateTime end, List<String> uris, boolean unique);
 
     HitInDto saveNewHit(HitInDto hitDto);
 }

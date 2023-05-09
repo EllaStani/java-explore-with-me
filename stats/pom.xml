@@ -12,7 +12,7 @@
     <artifactId>stats</artifactId>
     <packaging>pom</packaging>
 
-    <name>Stats</name>
+    <name>StatsMain</name>
 
     <modules>
         <module>stats-dto</module>

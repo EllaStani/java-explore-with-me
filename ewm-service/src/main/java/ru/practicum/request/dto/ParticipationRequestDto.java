@@ -1,24 +1,21 @@
-package ru.practicum.dto;
+package ru.practicum.request.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.practicum.common.Status;
 
-import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class HitInDto {
+public class ParticipationRequestDto {
     private int id;
-    @NotBlank
-    private String ip;
-    @NotBlank
-    private String uri;
-    @NotBlank
-    private String app;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime timestamp;
+    private LocalDateTime created;
+    private int requester;
+    private int event;
+    private Status status;
 }
