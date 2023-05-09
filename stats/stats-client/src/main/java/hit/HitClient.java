@@ -23,7 +23,7 @@ public class HitClient {
 
     private String local;
     private final RestTemplate restTemplate = new RestTemplate();
-    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     public List<HitDto> getHits(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
         log.info("HitClient. Запрос на получение статистики: uris={},start={}, end={},  unique={}",
