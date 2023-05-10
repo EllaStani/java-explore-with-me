@@ -1,11 +1,14 @@
 package ru.practicum.request;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import ru.practicum.request.dto.ParticipationRequestDto;
 import ru.practicum.request.dto.RequestUpdateStatusOutDto;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class RequestMapper {
     public static ParticipationRequestDto mapToParticipationRequestDto(Request request) {
         ParticipationRequestDto requestDto = new ParticipationRequestDto();

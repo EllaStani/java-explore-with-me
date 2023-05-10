@@ -13,6 +13,8 @@ import ru.practicum.category.Category;
 import ru.practicum.category.dto.CategoryDto;
 import ru.practicum.category.CategoryJpaRepository;
 import ru.practicum.category.CategoryMapper;
+import ru.practicum.comment.Comment;
+import ru.practicum.comment.CommentJpaRepository;
 import ru.practicum.common.*;
 import ru.practicum.dto.HitDto;
 import ru.practicum.event.dto.EventFullDto;
@@ -42,6 +44,7 @@ public class EventServiceImpl implements EventService {
     private final UserJpaRepository userRepository;
     private final RequestJpaRepository requestRepository;
     private final CategoryJpaRepository categoryRepository;
+    private final CommentJpaRepository commentRepository;
     private final HitClient hitClient;
     private final String app = "evm-service";
     private final LocalDateTime minStart = LocalDateTime.now().minusYears(100L);
@@ -105,9 +108,10 @@ public class EventServiceImpl implements EventService {
 
         if (event.getState() == State.PUBLISHED) {
             EventFullDto eventFullDto = EventMapper.mapToEventFullDto(event);
-
-            eventFullDto = setConfRequestEvent(List.of(eventFullDto), List.of(event.getId())).get(0);
-            eventFullDto = setViewsEvent(List.of(eventFullDto), List.of("/events/" + event.getId())).get(0);
+            eventFullDto.setConfirmedRequests(requestRepository.getCountConfirmedRequest(eventId, Status.CONFIRMED));
+            eventFullDto.setViews(hitClient.getHits(
+                    minStart, maxEnd, List.of("/events/" + event.getId()), false).size());
+            eventFullDto.setComments(commentRepository.findCommentByEventId(eventId).size());
             return eventFullDto;
         } else {
             log.error("Событие не опубликовано!");
@@ -119,9 +123,10 @@ public class EventServiceImpl implements EventService {
     public EventFullDto getPrivateEventByEventIdAndUserId(int userId, int eventId) {
         Event event = checkingExistEventByUserId(userId, eventId);
         EventFullDto eventFullDto = EventMapper.mapToEventFullDto(event);
-
-        eventFullDto = setConfRequestEvent(List.of(eventFullDto), List.of(event.getId())).get(0);
-        eventFullDto = setViewsEvent(List.of(eventFullDto), List.of("/events/" + event.getId())).get(0);
+        eventFullDto.setConfirmedRequests(requestRepository.getCountConfirmedRequest(eventId, Status.CONFIRMED));
+        eventFullDto.setViews(hitClient.getHits(
+                minStart, maxEnd, List.of("/events/" + event.getId()), false).size());
+        eventFullDto.setComments(commentRepository.findCommentByEventId(eventId).size());
         return eventFullDto;
     }
 
@@ -153,7 +158,6 @@ public class EventServiceImpl implements EventService {
         CategoryDto categoryDto = CategoryMapper.mapToCategoryDto(checkingExistCategory(eventNewDto.getCategory()));
         Event newEvent = eventRepository.save(event);
         return EventMapper.mapToNewEventDto(userShortDto, categoryDto, newEvent);
-
     }
 
     @Transactional
@@ -176,10 +180,10 @@ public class EventServiceImpl implements EventService {
         eventRepository.save(event);
 
         EventFullDto eventFullDto = EventMapper.mapToEventFullDto(event);
-
-        eventFullDto = setConfRequestEvent(List.of(eventFullDto), List.of(event.getId())).get(0);
-        eventFullDto = setViewsEvent(List.of(eventFullDto), List.of("/events/" + event.getId())).get(0);
-
+        eventFullDto.setConfirmedRequests(requestRepository.getCountConfirmedRequest(eventId, Status.CONFIRMED));
+        eventFullDto.setViews(hitClient.getHits(
+                minStart, maxEnd, List.of("/events/" + event.getId()), false).size());
+        eventFullDto.setComments(commentRepository.findCommentByEventId(eventId).size());
         return eventFullDto;
     }
 
@@ -199,9 +203,10 @@ public class EventServiceImpl implements EventService {
         eventRepository.save(event);
 
         EventFullDto eventFullDto = EventMapper.mapToEventFullDto(event);
-
-        eventFullDto = setConfRequestEvent(List.of(eventFullDto), List.of(event.getId())).get(0);
-        eventFullDto = setViewsEvent(List.of(eventFullDto), List.of("/events/" + event.getId())).get(0);
+        eventFullDto.setConfirmedRequests(requestRepository.getCountConfirmedRequest(eventId, Status.CONFIRMED));
+        eventFullDto.setViews(hitClient.getHits(
+                minStart, maxEnd, List.of("/events/" + event.getId()), false).size());
+        eventFullDto.setComments(commentRepository.findCommentByEventId(eventId).size());
         return eventFullDto;
     }
 
@@ -307,7 +312,6 @@ public class EventServiceImpl implements EventService {
 
     private List<EventFullDto> makeEventFullDtoList(List<Event> events) {
         List<EventFullDto> eventFullDtos = EventMapper.mapToListEventFullDto(events);
-
         List<Integer> ids = new ArrayList<>();
         List<String> uris = new ArrayList<>();
         events.forEach(event -> {
@@ -317,6 +321,7 @@ public class EventServiceImpl implements EventService {
 
         eventFullDtos = setConfRequestEvent(eventFullDtos, ids);
         eventFullDtos = setViewsEvent(eventFullDtos, uris);
+        eventFullDtos = setCommentsEvent(eventFullDtos, ids);
         return eventFullDtos;
     }
 
@@ -350,6 +355,21 @@ public class EventServiceImpl implements EventService {
 
     private EventFullDto setCountViews(EventFullDto eventFullDto, int countViews) {
         eventFullDto.setViews(countViews);
+        return eventFullDto;
+    }
+
+    private List<EventFullDto> setCommentsEvent(List<EventFullDto> eventFullDtos, List<Integer> eventIds) {
+        Map<Integer, List<Comment>> commentsMap = commentRepository.findCommentByEventIdIn(eventIds)
+                .stream()
+                .collect(Collectors.groupingBy(Comment::getIdEvent));
+        return eventFullDtos.stream()
+                .map(eventFullDto -> setComments(eventFullDto,
+                        commentsMap.getOrDefault(eventFullDto.getId(), Collections.emptyList()).size()))
+                .collect(Collectors.toList());
+    }
+
+    private EventFullDto setComments(EventFullDto eventFullDto, int countComments) {
+        eventFullDto.setComments(countComments);
         return eventFullDto;
     }
 }

@@ -1,5 +1,7 @@
 package ru.practicum.event;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import ru.practicum.category.Category;
 import ru.practicum.category.dto.CategoryDto;
 import ru.practicum.event.dto.EventFullDto;
@@ -12,6 +14,7 @@ import ru.practicum.user.dto.UserShortDto;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class EventMapper {
     public static EventFullDto mapToEventFullDto(Event event) {
         EventFullDto eventFullDto = new EventFullDto();
@@ -105,6 +108,7 @@ public class EventMapper {
         eventShortDto.setTitle(eventFullDto.getTitle());
         eventShortDto.setViews(eventFullDto.getViews());
         eventShortDto.setConfirmedRequests(eventFullDto.getConfirmedRequests());
+        eventShortDto.setComments(eventFullDto.getComments());
         return eventShortDto;
     }
 

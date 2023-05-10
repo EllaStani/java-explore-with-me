@@ -1,5 +1,7 @@
 package ru.practicum.user;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.springframework.data.domain.Page;
 import ru.practicum.user.dto.UserDto;
 import ru.practicum.user.dto.UserShortDto;
@@ -7,6 +9,7 @@ import ru.practicum.user.dto.UserShortDto;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UserMapper {
     public static UserDto mapToUserDto(User user) {
         return new UserDto(user.getId(), user.getName(), user.getEmail());

@@ -1,6 +1,7 @@
 package ru.practicum.event;
 
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 import ru.practicum.category.Category;
 import ru.practicum.common.State;
 import ru.practicum.user.User;
@@ -44,16 +45,19 @@ public class Event {
     private Boolean requestModeration;
 
     @Column(name = "created_on")
+    @CreationTimestamp
     private LocalDateTime createdOn;
     @Column(name = "published_on")
     private LocalDateTime publishedOn;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "initiator_id")
+    @ToString.Exclude
     private User initiator;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
+    @ToString.Exclude
     private Category category;
 
     @Column(name = "state")

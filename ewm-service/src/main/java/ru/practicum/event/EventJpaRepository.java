@@ -14,7 +14,7 @@ public interface EventJpaRepository extends JpaRepository<Event, Integer> {
 
     List<Event> findEventByInitiatorId(int userId, Pageable pageable);
 
-    List<Event> findEventByCategoryId(int categoryId);
+    Boolean existsEventByCategoryId(int categoryId);
 
     @Query("SELECT e from Event e " +
             "WHERE (:categories is null OR e.category.id IN :categories) " +

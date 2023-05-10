@@ -60,7 +60,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public void deleteCategoryById(int catId) {
         checkingExistCategory(catId);
-        if (eventRepository.findEventByCategoryId(catId).size() == 0) {
+        if (!eventRepository.existsEventByCategoryId(catId)) {
             log.info("Удалена категория с id = {}", catId);
             categoryRepository.deleteById(catId);
         } else {

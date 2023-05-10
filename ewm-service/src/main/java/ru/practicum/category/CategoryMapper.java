@@ -1,5 +1,7 @@
 package ru.practicum.category;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.springframework.data.domain.Page;
 import ru.practicum.category.dto.CategoryDto;
 import ru.practicum.category.dto.CategoryNewDto;
@@ -7,6 +9,7 @@ import ru.practicum.category.dto.CategoryNewDto;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CategoryMapper {
     public static CategoryDto mapToCategoryDto(Category category) {
         return new CategoryDto(category.getId(), category.getName());

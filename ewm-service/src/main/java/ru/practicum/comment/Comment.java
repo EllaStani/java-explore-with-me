@@ -1,8 +1,7 @@
-package ru.practicum.request;
+package ru.practicum.comment;
 
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
-import ru.practicum.common.Status;
 import ru.practicum.event.Event;
 import ru.practicum.user.User;
 
@@ -10,43 +9,33 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "requests")
+@Table(name = "comments")
 @Getter
 @Setter
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public class Request {
+public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private int id;
+    private Integer id;
 
+    @Column(name = "text")
+    private String text;
     @Column(name = "created")
     @CreationTimestamp
     private LocalDateTime created;
-    @Column(name = "status")
-    @Enumerated(EnumType.STRING)
-    private Status status;
-
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    @ToString.Exclude
+    private User user;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "event_id")
+    @ToString.Exclude
     private Event event;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "requester_id")
-    private User requester;
 
     public int getIdEvent() {
         return this.event.getId();
-    }
-
-    @Override
-    public String toString() {
-        return "\n" + "Request = {" +
-                "   id=" + id + ", " +
-                "   status'" + status + ", " +
-                "   requester_id='" + requester.getId() + ", " +
-                "   event_id='" + event.getId();
     }
 }
