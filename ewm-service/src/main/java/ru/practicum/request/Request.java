@@ -1,6 +1,7 @@
 package ru.practicum.request;
 
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 import ru.practicum.common.Status;
 import ru.practicum.event.Event;
 import ru.practicum.user.User;
@@ -22,6 +23,7 @@ public class Request {
     private int id;
 
     @Column(name = "created")
+    @CreationTimestamp
     private LocalDateTime created;
     @Column(name = "status")
     @Enumerated(EnumType.STRING)

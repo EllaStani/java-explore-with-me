@@ -2,15 +2,20 @@ package ru.practicum.comment;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.comment.dto.CommentDto;
 import ru.practicum.comment.dto.CommentNewDto;
+import ru.practicum.common.FromSizeRequest;
 import ru.practicum.common.State;
 import ru.practicum.event.Event;
 import ru.practicum.event.EventJpaRepository;
 import ru.practicum.exception.ConflictException;
 import ru.practicum.user.User;
 import ru.practicum.user.UserJpaRepository;
+
+import java.util.List;
 
 @Slf4j
 @Service
@@ -19,6 +24,20 @@ public class CommentServiceImpl implements CommentService {
     private final CommentJpaRepository commentRepository;
     private final UserJpaRepository userRepository;
     private final EventJpaRepository eventRepository;
+
+    @Override
+    public CommentDto getCommentById(int commentId) {
+        Comment comment = checkingExistComment(commentId);
+        return CommentMapper.mapToCommentDto(comment);
+    }
+
+    @Override
+    public List<CommentDto> getCommentsByEventId(int eventId, int from, int size) {
+        checkingExistEvent(eventId);
+        Pageable pageable = FromSizeRequest.of(from, size, Sort.unsorted());
+        List<Comment> comments = commentRepository.findCommentByEventId(eventId, pageable);
+        return CommentMapper.mapToListCommentDto(comments);
+    }
 
     @Override
     public CommentDto saveNewComment(int userId, int eventId, CommentNewDto commentNewDto) {

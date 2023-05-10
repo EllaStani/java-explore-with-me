@@ -17,7 +17,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class EventNewDto {
-    @NotNull(message = "EventNewDto. Field: annotation не задано")
     @NotBlank(message = "EventNewDto. Field: annotation не может быть пустым или содержать только пробелы")
     @Size(min = 20, max = 2000)
     private String annotation;
@@ -25,7 +24,6 @@ public class EventNewDto {
     @NotNull(message = "EventNewDto. Field: category не задано")
     private Integer category;
 
-    @NotNull(message = "EventNewDto. Field: description не задано")
     @NotBlank(message = "EventNewDto. Field: description не может быть пустым или содержать только пробелы")
     @Size(min = 20, max = 7000)
     private String description;
@@ -47,7 +45,6 @@ public class EventNewDto {
     @Value("true")
     private Boolean requestModeration;
 
-    @NotNull(message = "EventNewDto. Field: title не задано")
     @NotBlank(message = "EventNewDto. Field: title не может быть пустым или содержать только пробелы")
     @Size(min = 3, max = 120)
     private String title;

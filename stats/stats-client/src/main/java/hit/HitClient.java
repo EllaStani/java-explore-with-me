@@ -20,7 +20,6 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class HitClient {
     @Value("http://stats-server:9090")
-
     private String local;
     private final RestTemplate restTemplate = new RestTemplate();
     private DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
